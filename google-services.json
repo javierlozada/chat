@@ -1,0 +1,73 @@
+{
+  "project_info": {
+    "project_number": "49635419869",
+    "firebase_url": "https://push-406fc.firebaseio.com",
+    "project_id": "push-406fc",
+    "storage_bucket": "push-406fc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:49635419869:android:036e7f8abe4fcf78",
+        "android_client_info": {
+          "package_name": "com.settleitsoft.androidapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "49635419869-831fjupmndrqtgmpokqc0jh416tf41lr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBDs-kxvcpdcyksa8NTsoKD5EA75kKdh6A"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:49635419869:android:e1ef79636c7f0754",
+        "android_client_info": {
+          "package_name": "com.example.devinlozada.chat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "49635419869-831fjupmndrqtgmpokqc0jh416tf41lr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBDs-kxvcpdcyksa8NTsoKD5EA75kKdh6A"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
