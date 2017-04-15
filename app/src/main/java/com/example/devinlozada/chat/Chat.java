@@ -24,6 +24,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageButton;
 
+import com.example.devinlozada.chat.biblia.biblia;
+import com.example.devinlozada.chat.externalFunctions.sharedSubMenu;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -31,8 +33,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.ByteArrayOutputStream;
 
-public class Chat extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class Chat extends AppCompatActivity {
 
     /*Initializar componentes*/
     private FirebaseAuth auth;
@@ -44,8 +45,7 @@ public class Chat extends AppCompatActivity
     private ImageButton  profilePhoto;
     private static final int REQUEST_IMAGE_CAPTURE = 1;
 
-
-
+    private sharedSubMenu shared = new sharedSubMenu(Chat.this);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,7 +88,7 @@ public class Chat extends AppCompatActivity
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        navigationView.setNavigationItemSelectedListener(shared);
 
 
         tabLayout       = (TabLayout) findViewById(R.id.tab_layout);
@@ -201,53 +201,4 @@ public class Chat extends AppCompatActivity
 
         return super.onOptionsItemSelected(item);
     }
-
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-
-        switch (item.getItemId()){
-
-            case R.id.nav_camera:
-                break;
-            case R.id.nav_gallery:
-                break;
-            case R.id.nav_slideshow:
-                break;
-            case R.id.nav_share:
-                break;
-            case R.id.cerrarSession:
-                //when user clicks the logout button in the submenu a Alertdialog(small window) appears
-                AlertDialog.Builder dialogo = new AlertDialog.Builder(Chat.this);
-                dialogo.setMessage("¿Estas seguro que quieres cerrar session?");
-                dialogo.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        auth.signOut();
-
-                        Intent logout = new Intent(Chat.this,ChatFireBase.class);
-                        startActivity(logout);
-                        finish();
-
-                    }
-                });
-
-                dialogo.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener(){
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        //doesnt do anything
-                    }
-                });
-                dialogo.show();
-                break;
-        }
-
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
-
-
-
 }

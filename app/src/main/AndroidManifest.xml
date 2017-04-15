@@ -43,6 +43,9 @@
             android:label="@string/title_activity_single_chat"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:name=".biblia.biblia"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".EditProfileActivity"
             android:label="@string/title_activity_edit_profile"
             android:theme="@style/AppTheme.NoActionBar"></activity>
