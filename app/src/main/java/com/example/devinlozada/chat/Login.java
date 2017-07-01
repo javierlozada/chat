@@ -6,25 +6,22 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 
-public class ChatFireBase extends AppCompatActivity {
+public class Login extends AppCompatActivity {
 
     private Button login;
     private EditText correo, password;
@@ -33,19 +30,35 @@ public class ChatFireBase extends AppCompatActivity {
     private FirebaseAuth auth;
     private RelativeLayout loginLayout;
 
+    static String LoggedIn_User_Email;
+    public static int Device_Width;
+    String getEmail;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_fire_base);
 
+        Bundle extras = getIntent().getExtras();
+
         //Get Firebase auth instance
         auth = FirebaseAuth.getInstance();
 
-        if (auth.getCurrentUser() != null) {
-            startActivity(new Intent(ChatFireBase.this, Chat.class));
+      if (auth.getCurrentUser() != null) {
+
+          if(extras != null){
+              getEmail = extras.getString("Email");
+              LoggedIn_User_Email = getEmail;
+          }
+
+            startActivity(new Intent(Login.this, Chat.class));
             finish();
         }
+
+
 
         login           = (Button) findViewById(R.id.loginButton);
         correo          = (EditText) findViewById(R.id.input_correo);
@@ -55,6 +68,8 @@ public class ChatFireBase extends AppCompatActivity {
         forgotLabel     = (TextView) findViewById(R.id.olvidecontra);
         loginLayout     = (RelativeLayout) findViewById(R.id.activity_chat_fire_base);
 
+        DisplayMetrics metrics = getApplicationContext().getResources().getDisplayMetrics();
+        Device_Width = metrics.widthPixels;
 
         login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,7 +96,7 @@ public class ChatFireBase extends AppCompatActivity {
 
                 //authenticate user
                 auth.signInWithEmailAndPassword(user, pass)
-                        .addOnCompleteListener(ChatFireBase.this, new OnCompleteListener<AuthResult>() {
+                        .addOnCompleteListener(Login.this, new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 // If sign in fails, display a message to the user. If sign in succeeds
@@ -97,7 +112,7 @@ public class ChatFireBase extends AppCompatActivity {
                                                 .setAction("Action", null).show();
                                     }
                                 } else {
-                                    Intent intent = new Intent(ChatFireBase.this, Chat.class);
+                                    Intent intent = new Intent(Login.this, Chat.class);
                                     startActivity(intent);
                                     finish();
                                 }
@@ -112,7 +127,7 @@ public class ChatFireBase extends AppCompatActivity {
         signUpLabel.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                Intent signUp = new Intent(ChatFireBase.this, signUp.class);
+                Intent signUp = new Intent(Login.this, signUp.class);
                 startActivity(signUp);
                 finish();
             }
@@ -121,7 +136,7 @@ public class ChatFireBase extends AppCompatActivity {
         forgotLabel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent forgotPass = new Intent(ChatFireBase.this,forgotPassword.class);
+                Intent forgotPass = new Intent(Login.this,forgotPassword.class);
                 startActivity(forgotPass);
                 finish();
             }

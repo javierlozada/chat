@@ -4,8 +4,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import com.example.devinlozada.chat.tabFragment;
-
 /**
  * Created by devinlozada on 28/02/17.
  */

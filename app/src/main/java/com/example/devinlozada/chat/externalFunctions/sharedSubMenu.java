@@ -4,29 +4,27 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.view.MenuItem;
 
-import com.example.devinlozada.chat.Chat;
-import com.example.devinlozada.chat.ChatFireBase;
+import com.example.devinlozada.chat.Login;
+import com.example.devinlozada.chat.Perfil;
 import com.example.devinlozada.chat.R;
 import com.example.devinlozada.chat.biblia.biblia;
 import com.google.firebase.auth.FirebaseAuth;
 
-/**
- * Created by djl on 15/04/17.
- */
 
 public class sharedSubMenu implements NavigationView.OnNavigationItemSelectedListener  {
     Context context;
     FirebaseAuth auth;
+    DrawerLayout subMenu;
 
     /*receiving context to be set in onNavigationItemSelected function, to see whitch activity
    * should go*/
-    public sharedSubMenu(final Context _context) {
+    public sharedSubMenu(final Context _context,DrawerLayout _submenu) {
         context = _context;
+        subMenu = _submenu;
 
     }//end SharedMenu
 
@@ -39,14 +37,15 @@ public class sharedSubMenu implements NavigationView.OnNavigationItemSelectedLis
         auth = FirebaseAuth.getInstance();
 
         switch (item.getItemId()){
-
             case R.id.nav_camera:
                 break;
             case R.id.nav_gallery:
                 break;
             case R.id.nav_slideshow:
                 break;
-            case R.id.nav_share:
+            case R.id.action_edit_profile:
+                Intent perfil = new Intent(context, Perfil.class);
+                context.startActivity(perfil);
                 break;
             case R.id.biblia:
                 Intent bible = new Intent(context,biblia.class);
@@ -60,7 +59,7 @@ public class sharedSubMenu implements NavigationView.OnNavigationItemSelectedLis
                     public void onClick(DialogInterface dialog, int which) {
                         auth.signOut();
 
-                        Intent logout = new Intent(context,ChatFireBase.class);
+                        Intent logout = new Intent(context,Login.class);
                         context.startActivity(logout);
 
                     }
@@ -75,6 +74,8 @@ public class sharedSubMenu implements NavigationView.OnNavigationItemSelectedLis
                 dialogo.show();
                 break;
         }
+
+        subMenu.closeDrawers();
 
         return true;
     }

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name"></string>
+    <string name="app_name">Grupo Juvenil Causa y Efecto</string>
 
     <string name="facebook_app_id">231774397228575</string>
     <string name="title_activity_contacts">contacts</string>
@@ -83,6 +83,7 @@
     <string name="pref_title_vibrate">Vibrate</string>
     <string name="title_activity_single_chat">singleChat</string>
     <string name="title_activity_edit_profile">EditProfileActivity</string>
+    <string name="title_activity_profile">Profile</string>
 
 
 </resources>

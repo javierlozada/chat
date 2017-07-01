@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!---	Copyright 2013,2014 AITECH SOFTWARE CORPORATION, INC., all rights reserved
+
+		Name:	dot_bluexml
+		Author:	Devin Javier Lozada
+		Date:	21-sept-2016
+		Desc:	drawable for the tutorial
+
+		*****	Revision History
+
+		By:
+		Date:
+		Desc:
+
+-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+
+    <solid android:color="#0ccf44" />
+    <size
+        android:width="20dp"
+        android:height="20dp"/>
+
+
+</shape>

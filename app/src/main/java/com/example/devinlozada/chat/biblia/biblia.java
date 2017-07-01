@@ -21,8 +21,9 @@ public class biblia extends AppCompatActivity{
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private ViewPagerBiblia adapter;
+    private DrawerLayout drawer;
 
-    private sharedSubMenu shared  = new sharedSubMenu(biblia.this);
+    private sharedSubMenu shared;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +36,9 @@ public class biblia extends AppCompatActivity{
         viewPager                       = (ViewPager) findViewById(R.id.viewPager);
         NavigationView navigationView   = (NavigationView) findViewById(R.id.nav_view);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer  = (DrawerLayout) findViewById(R.id.drawer_layout);
+        shared  = new sharedSubMenu(biblia.this,  drawer);
+
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);

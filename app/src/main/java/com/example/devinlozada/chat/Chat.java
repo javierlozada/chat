@@ -1,8 +1,7 @@
 package com.example.devinlozada.chat;
 
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -11,8 +10,6 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AlertDialog;
-import android.util.Base64;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -23,15 +20,19 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 
-import com.example.devinlozada.chat.biblia.biblia;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.devinlozada.chat.externalFunctions.sharedSubMenu;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
-import java.io.ByteArrayOutputStream;
+import com.google.firebase.database.ValueEventListener;
 
 public class Chat extends AppCompatActivity {
 
@@ -42,16 +43,22 @@ public class Chat extends AppCompatActivity {
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private ViewPagerAdapter adapter;
-    private ImageButton  profilePhoto;
-    private static final int REQUEST_IMAGE_CAPTURE = 1;
+    private NavigationView navigationView;
+    private DrawerLayout submenu;
+    private ImageView profilePhoto;
+    DatabaseReference myRef,myRef2;
+    TextView name, email;
+    Toolbar toolbar;
 
-    private sharedSubMenu shared = new sharedSubMenu(Chat.this);
+
+    private sharedSubMenu shared;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+
+        showToolbar("Causa y Efecto",false);
 
         auth = FirebaseAuth.getInstance();
 
@@ -65,62 +72,118 @@ public class Chat extends AppCompatActivity {
                 if (user == null) {
                     // user auth state is changed - user is null
                     // launch login activity
-                    startActivity(new Intent(Chat.this, ChatFireBase.class));
+                    startActivity(new Intent(Chat.this, Login.class));
                     finish();
                 }
             }
         };
 
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        submenu = (DrawerLayout) findViewById(R.id.drawer_layout);
+        shared  = new sharedSubMenu(Chat.this, submenu);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
+                this, submenu, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        submenu.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(shared);
+        View header     = navigationView.getHeaderView(0);
 
+
+        profilePhoto    = (ImageView) header.findViewById(R.id.profilePhoto);
+        email           = (TextView)  header.findViewById(R.id.email);
+        name            = (TextView) header.findViewById(R.id.name);
 
         tabLayout       = (TabLayout) findViewById(R.id.tab_layout);
         viewPager       = (ViewPager) findViewById(R.id.viewPager);
-        View header = navigationView.getHeaderView(0);
-        profilePhoto= (ImageButton) header.findViewById(R.id.changeprofile);
 
-        adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        viewPager.setAdapter(adapter);
+        TabLayout.Tab groups  = tabLayout.newTab();
+        TabLayout.Tab eventos = tabLayout.newTab();
 
-        viewPager.setCurrentItem(1);
+        tabLayout.addTab(groups, 0);
+        tabLayout.addTab(eventos, 1);
+        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+        tabLayout.setupWithViewPager(viewPager);
 
-
-        final TabLayout.Tab groups = tabLayout.newTab().setText("Grupos");
-        final TabLayout.Tab chat = tabLayout.newTab().setText("Chats");
-        final TabLayout.Tab contact = tabLayout.newTab().setText("Eventos");
-        final TabLayout.Tab cam = tabLayout.newTab().setIcon(R.drawable.ic_menu_camera);
-
-        tabLayout.addTab(cam,    0);
-        tabLayout.addTab(chat,   1);
-        tabLayout.addTab(contact,2);
-        tabLayout.addTab(groups, 3);
-
+        viewPager.setOffscreenPageLimit(2);
+        viewPager.setCurrentItem(0);
 
         /*cambio de color de los tabs*/
         tabLayout.setSelectedTabIndicatorColor(ContextCompat.getColor(this,R.color.colorWhite));
         tabLayout.setTabTextColors(ContextCompat.getColorStateList(this,R.color.colorWhite));
 
-        /*Listeners*/
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        adapter = new ViewPagerAdapter(getSupportFragmentManager(),tabLayout.getTabCount());
+        viewPager.setAdapter(adapter);
+
+        FirebaseUser user           = auth.getCurrentUser();
+        String UserID               = user.getEmail().replace("@","").replace(".","");
+
+
+        myRef = FirebaseDatabase.getInstance().getReference().child("android").child(UserID).child("image_Url");
+        myRef2 = FirebaseDatabase.getInstance().getReference().child("android").child(UserID).child("Name");
+
+        email.setText(user.getEmail());
+
+
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String photoURL = (String) dataSnapshot.getValue();
+
+                if(!myRef.equals("Null")){
+                    Glide.with(Chat.this)
+                            .load(photoURL)
+                            .crossFade()
+                            .thumbnail(0.5f)
+                            .placeholder(R.mipmap.ic_launcher)
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .into(profilePhoto);
+                }else {
+                    //
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        myRef2.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String nameStr = (String) dataSnapshot.getValue();
+                name.setText(nameStr.trim());
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                //viewPager.setCurrentItem(tab.getPosition());
+                selectPage(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {}
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {}
+        });
+
+        //listener para tener el efecto de swipe entre tabs
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener(){
 
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -129,19 +192,6 @@ public class Chat extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int position) {
-                switch (position){
-                    case 0:
-                        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                        startActivityForResult(takePictureIntent,
-                                REQUEST_IMAGE_CAPTURE);
-                        break;
-                    case 1:
-                        break;
-                    case 2:
-                        break;
-                    case 3:
-                        break;
-                }
 
             }
 
@@ -152,15 +202,7 @@ public class Chat extends AppCompatActivity {
         });
 
 
-        /*obtengo la imagen que esta en el submenu y le agrego un evento para que abra las fotos del celular*/
-        profilePhoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                final Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
-                galleryIntent.setType("image/*");
-                startActivityForResult(galleryIntent, Helper.SELECT_PICTURE);
-            }
-        });
+
 
 
         /*end listeners*/
@@ -171,8 +213,6 @@ public class Chat extends AppCompatActivity {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
         }
     }
 
@@ -201,4 +241,48 @@ public class Chat extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+       /* String UserID               = user.getEmail().replace("@","").replace(".","");
+        DatabaseReference mRootRef  = FirebaseDatabase.getInstance().getReference().child("isOnline");
+        DatabaseReference ref1      = mRootRef.child("android").child(UserID);
+        ref1.child("isOnline").setValue("false");*/
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+
+        int size = navigationView.getMenu().size();
+        for (int i = 0; i < size; i++) {
+            navigationView.getMenu().getItem(i).setChecked(false);
+        }
+    }
+
+    void selectPage(int pageIndex){
+        tabLayout.setScrollPosition(pageIndex,0f,true);
+        viewPager.setCurrentItem(pageIndex);
+    }
+
+
+    private void showToolbar( String title, boolean upbutton) {
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);//Crea la compatibilidad con versiones anteriores a lolipop
+        getSupportActionBar().setTitle(title);
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(upbutton);
+
+    }// Fin showToolbar
+
+
 }
