@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
@@ -78,6 +79,7 @@ public class Perfil extends AppCompatActivity {
 
     private CardView changePassword,userNameCardView,view2;
     private AppBarLayout appBarLayout;
+    CollapsingToolbarLayout collapsingToolbarLayout = null;
 
 
 
@@ -97,6 +99,15 @@ public class Perfil extends AppCompatActivity {
         userNameCardView    = (CardView) findViewById(R.id.usernameCardView);
         appBarLayout        = (AppBarLayout) findViewById(R.id.app_bar);
         view2               = (CardView) findViewById(R.id.view2);
+
+        collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+
+
+
+        collapsingToolbarLayout.setTitle("Perfil");
+        collapsingToolbarLayout.setCollapsedTitleTextAppearance(R.style.coll_toolbar_title);
+        collapsingToolbarLayout.setExpandedTitleTextAppearance(R.style.exp_toolbar_title);
+        collapsingToolbarLayout.setStatusBarScrimColor(getResources().getColor(R.color.colorPrimary));
 
         //Get Firebase auth instance
         auth = FirebaseAuth.getInstance();
@@ -123,9 +134,6 @@ public class Perfil extends AppCompatActivity {
                    cameraButton.setVisibility(View.GONE);
                    view2.setVisibility(View.GONE);
                }
-
-
-
 
             }
         });
