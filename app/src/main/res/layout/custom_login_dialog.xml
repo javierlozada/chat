@@ -90,9 +90,9 @@
                     android:id="@+id/cancel_action"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/colorPrimary"
+                    android:background="@null"
                     android:text="Cancelar"
-                    android:textColor="#fff" />
+                    android:textColor="@color/colorPrimary" />
 
 
             </LinearLayout>
@@ -108,9 +108,9 @@
                     android:id="@+id/siguiente_action"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/colorPrimary"
+                    android:background="@null"
                     android:text="Siguiente"
-                    android:textColor="#fff" />
+                    android:textColor="@color/colorPrimary" />
 
 
             </LinearLayout>

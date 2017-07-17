@@ -1,5 +1,6 @@
 package com.example.devinlozada.chat.externalFunctions;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -38,6 +39,7 @@ public class sharedSubMenu implements NavigationView.OnNavigationItemSelectedLis
 
         switch (item.getItemId()){
             case R.id.nav_camera:
+
                 break;
             case R.id.nav_gallery:
                 break;
@@ -61,6 +63,8 @@ public class sharedSubMenu implements NavigationView.OnNavigationItemSelectedLis
 
                         Intent logout = new Intent(context,Login.class);
                         context.startActivity(logout);
+                        ((Activity) context).finish();
+
 
                     }
                 });

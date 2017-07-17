@@ -148,6 +148,12 @@ public class signUp extends AppCompatActivity {
                                     ref1.child("Email").setValue(user.getEmail());
                                     ref1.child("FirebaseToken").setValue(fireBaseToken);
 
+                                    DatabaseReference mRootRef2  = FirebaseDatabase.getInstance().getReference("isOnline").child("enLinea");
+
+                                    DatabaseReference ref2     = mRootRef2.child(UserID);
+                                    ref2.child("isOnline").setValue("true");
+                                    ref2.child("Escribiendo").setValue("false");
+
 
                                     Intent signUp = new Intent(signUp.this,Login.class);
                                     signUp.putExtra("Email",LoggedIn_User_Email);

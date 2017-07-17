@@ -112,6 +112,7 @@
         <activity android:name=".cambiarContrasena" />
         <activity android:name=".publicar" />
         <activity android:name=".profile_sender"></activity>
+        <activity android:name=".ChatGroupConversationActivity"></activity>
     </application>
 
 </manifest>

@@ -204,10 +204,9 @@ public class publicar extends AppCompatActivity {
 
     private void startPosting() {
 
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy H:mm");
-        final String currentDateandTime = sdf.format(new Date());
+        SimpleDateFormat sdf        = new SimpleDateFormat("dd-MMM-yyyy H:mm");
+        final String currentDateandTime   = sdf.format(new Date());
 
-        System.out.println("currentDateandTime " + currentDateandTime);
 
         mProgress.setMessage("Publicando...");
         mProgress.show();
@@ -229,9 +228,14 @@ public class publicar extends AppCompatActivity {
                     newPost.child("comentario").setValue(comentarioStr);
                     newPost.child("image").setValue(downloadUri.toString());
                     newPost.child("name").setValue(name);
-                    newPost.child("profileNamePhoto").setValue(image_URL);
-                    newPost.child("horaPublicacion").setValue(currentDateandTime);
 
+                    if(image_URL == null){
+                        newPost.child("profileNamePhoto").setValue("Null");
+                    }else {
+                        newPost.child("profileNamePhoto").setValue(image_URL);
+                    }
+
+                    newPost.child("horaPublicacion").setValue(currentDateandTime);
                     mProgress.dismiss();
                     new NetworkAsyncTask().execute();
                     startActivity(new Intent(publicar.this,Chat.class));
@@ -277,8 +281,6 @@ public class publicar extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(Void... params) {
-
-
 
             //send Push Notification
             HttpsURLConnection connection = null;

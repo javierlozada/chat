@@ -1,23 +1,15 @@
 package com.example.devinlozada.chat;
 
-import android.app.Activity;
-import android.app.Dialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Gravity;
+import android.support.v7.widget.SimpleItemAnimator;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -34,47 +26,32 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
 
-
-
-public class tabFragmentGroup extends Fragment{
+public class tabFragmentIndividual extends Fragment{
 
 
     RecyclerView recyclerView;
     FirebaseDatabase firebaseDatabase;
-    DatabaseReference myRef;
+    DatabaseReference myRef,mRootRef;
     public FirebaseRecyclerAdapter<Show_Chat_Activity_Data_Items, Show_Chat_ViewHolder> mFirebaseAdapter;
     ProgressBar progressBar;
     LinearLayoutManager mLinearLayoutManager;
 
-    private SharedPreferences prefs;
-    private String getEmail;
     private FirebaseAuth auth;
     private String email;
     private FirebaseUser user;
+    private static String enLinea;
 
 
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.contacts,container,false);
+        View v = inflater.inflate(R.layout.individual,container,false);
 
-        //groups   = (ListView) v.findViewById(R.id.messagesContainer);
-        //addGroup = (FloatingActionButton) v.findViewById(R.id.addGroup);
-
-         /* iniciating getSharedPreferences to put Strings and to Edit*/
-        prefs    = getActivity().getSharedPreferences("Prefs", getActivity().MODE_PRIVATE);
-
-        getEmail = prefs.getString("Email",null);
 
         firebaseDatabase = FirebaseDatabase.getInstance();
+
 
         myRef = firebaseDatabase.getReference("android");
         myRef.keepSynced(true);
@@ -88,15 +65,22 @@ public class tabFragmentGroup extends Fragment{
         }
 
 
+
+
         progressBar = (ProgressBar) v.findViewById(R.id.show_chat_progressBar2);
 
         //Recycler View
         recyclerView = (RecyclerView)v.findViewById(R.id.show_chat_recyclerView);
+        recyclerView.setHasFixedSize(true);
+
 
         mLinearLayoutManager = new LinearLayoutManager(getActivity());
-        //mLinearLayoutManager.setStackFromEnd(true);
-
+        mLinearLayoutManager.setReverseLayout(true);
+        mLinearLayoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(mLinearLayoutManager);
+
+
+
 
         return v;
     }
@@ -123,13 +107,14 @@ public class tabFragmentGroup extends Fragment{
 
                     viewHolder.Person_Name(model.getName());
                     viewHolder.Person_Image(model.getImage_Url());
+                    //viewHolder.isOnlineView(enLinea);
+
                     //viewHolder.Person_Email(model.getEmail());
 
                     if(model.getEmail().equals(email)){
 
                         viewHolder.Layout_hide();
                         viewHolder.person_email.setVisibility(View.GONE);
-                        viewHolder.isOnline.setVisibility(View.GONE);
                         viewHolder.person_name.setVisibility(View.GONE);
 
 
@@ -174,7 +159,9 @@ public class tabFragmentGroup extends Fragment{
             }
         };
 
+        recyclerView.setHasFixedSize(false);
         recyclerView.setAdapter(mFirebaseAdapter);
+        mFirebaseAdapter.notifyDataSetChanged();
 
     }
 
@@ -182,9 +169,8 @@ public class tabFragmentGroup extends Fragment{
     public static class Show_Chat_ViewHolder extends RecyclerView.ViewHolder {
         private final TextView person_name, person_email;
         private final ImageView person_image;
-        private final ImageView isOnline;
         private final LinearLayout layout;
-        final LinearLayout.LayoutParams params;
+        private LinearLayout.LayoutParams params;
 
 
         public Show_Chat_ViewHolder(final View itemView) {
@@ -193,7 +179,6 @@ public class tabFragmentGroup extends Fragment{
             person_email    = (TextView) itemView.findViewById(R.id.chat_persion_email);
             person_image    = (ImageView) itemView.findViewById(R.id.chat_persion_image);
             layout          = (LinearLayout)itemView.findViewById(R.id.show_chat_single_item_layout);
-            isOnline        = (ImageView) itemView.findViewById(R.id.isOnline);
             params          = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         }
 
@@ -211,15 +196,6 @@ public class tabFragmentGroup extends Fragment{
 
         private void Person_Email(String title) {
             person_email.setText(title);
-        }
-
-        private void isOnlineView(String isOnlineString){
-            if(isOnlineString.equals("true")){
-                isOnline.setVisibility(View.VISIBLE);
-            }else {
-                isOnline.setVisibility(View.GONE);
-            }
-
         }
 
         private void Person_Image(String url) {

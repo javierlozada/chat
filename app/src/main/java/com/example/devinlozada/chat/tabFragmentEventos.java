@@ -49,13 +49,14 @@ public class tabFragmentEventos extends Fragment{
     private RecyclerView mList;
     private DatabaseReference mDatabase;
     private LinearLayoutManager mLayoutManager;
+    private FirebaseRecyclerAdapter<news_feed,listFeedItem> firebaseRecyclerAdapter;
 
 
 
     @Override
     public void onStart(){
         super.onStart();
-        FirebaseRecyclerAdapter<news_feed,listFeedItem> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<news_feed, listFeedItem>(
+        firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<news_feed, listFeedItem>(
                 news_feed.class,R.layout.item_list,listFeedItem.class,mDatabase
         ) {
             @Override
@@ -70,6 +71,7 @@ public class tabFragmentEventos extends Fragment{
         };
 
 
+        mList.setHasFixedSize(false);
         mList.setAdapter(firebaseRecyclerAdapter);
         firebaseRecyclerAdapter.notifyDataSetChanged();
 
@@ -110,13 +112,18 @@ public class tabFragmentEventos extends Fragment{
 
         public void setImage(Context ctx, String image){
             ImageView Image = (ImageView) mView.findViewById(R.id.photoImage);
-            Glide.with(ctx)
-                    .load(image)
-                    .crossFade()
-                    .thumbnail(0.5f)
-                    .placeholder(R.mipmap.ic_launcher)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .into(Image);
+
+            if(image !=null){
+                Glide.with(ctx)
+                        .load(image)
+                        .crossFade()
+                        .thumbnail(0.5f)
+                        .placeholder(R.mipmap.ic_launcher)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .into(Image);
+            }
+
+
 
         }
 
@@ -144,6 +151,8 @@ public class tabFragmentEventos extends Fragment{
         mLayoutManager.setReverseLayout(true);
         mLayoutManager.setStackFromEnd(true);
         mList.setLayoutManager(mLayoutManager);
+
+
         mDatabase           = FirebaseDatabase.getInstance().getReference().child("Blog");
         mDatabase.keepSynced(true);
 
@@ -184,7 +193,7 @@ public class tabFragmentEventos extends Fragment{
                             .load(photoURL)
                             .crossFade()
                             .thumbnail(0.5f)
-                            .placeholder(R.mipmap.ic_launcher)
+                            .placeholder(R.drawable.loading)
                             .diskCacheStrategy(DiskCacheStrategy.ALL)
                             .into(profile_Photo);
                 }
@@ -212,6 +221,8 @@ public class tabFragmentEventos extends Fragment{
 
             }
         });
+
+
 
 
 

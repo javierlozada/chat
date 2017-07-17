@@ -2,7 +2,9 @@ package com.example.devinlozada.chat;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.DialogFragment;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -28,6 +30,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -48,12 +51,13 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
+import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class Perfil extends AppCompatActivity {
+public class Perfil extends AppCompatActivity implements android.app.DatePickerDialog.OnDateSetListener {
 
     ImageView cameraButton;
 
@@ -67,23 +71,18 @@ public class Perfil extends AppCompatActivity {
     private Uri mImageUri = Uri.EMPTY;
     private ProgressDialog mProgressDialog;
 
-    private String photoURL;
-    private DatabaseReference myRef,myRef2;
+    private DatabaseReference myRef;
 
     private ImageView profileImageView;
 
     private FirebaseAuth auth;
     private FirebaseUser user;
 
-    private TextView nombre;
+    private TextView nombre,numero_celular,status,fullDate;
 
-    private CardView changePassword,userNameCardView,view2;
+    private CardView changePassword,userNameCardView,view2,statusCardView,birthDate,phoneNumber;
     private AppBarLayout appBarLayout;
-    CollapsingToolbarLayout collapsingToolbarLayout = null;
-
-
-
-
+    private CollapsingToolbarLayout collapsingToolbarLayout = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,10 +98,16 @@ public class Perfil extends AppCompatActivity {
         userNameCardView    = (CardView) findViewById(R.id.usernameCardView);
         appBarLayout        = (AppBarLayout) findViewById(R.id.app_bar);
         view2               = (CardView) findViewById(R.id.view2);
+        statusCardView      = (CardView) findViewById(R.id.statusCardView);
+        birthDate           = (CardView) findViewById(R.id.birthDate);
+        phoneNumber         = (CardView) findViewById(R.id.phoneNumber);
+        numero_celular      = (TextView) findViewById(R.id.numero_celular);
+        status              = (TextView) findViewById(R.id.status);
+        fullDate            = (TextView) findViewById(R.id.cumpleAnos);
+
+        birthDate.setOnClickListener(datePickerDialog);
 
         collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-
-
 
         collapsingToolbarLayout.setTitle("Perfil");
         collapsingToolbarLayout.setCollapsedTitleTextAppearance(R.style.coll_toolbar_title);
@@ -116,27 +121,136 @@ public class Perfil extends AppCompatActivity {
             user = auth.getCurrentUser();
             String email        = user.getEmail();
             String USER_ID      = email.replace("@","").replace(".","");
-            myRef = FirebaseDatabase.getInstance().getReference().child("android").child(USER_ID).child("image_Url");
-            myRef2= FirebaseDatabase.getInstance().getReference().child("android").child(USER_ID).child("Name");
+            myRef = FirebaseDatabase.getInstance().getReference().child("android").child(USER_ID);
         }
+
+        phoneNumber.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Dialog dialog = new Dialog(Perfil.this);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setContentView(R.layout.custom_phonenumber_dialog);
+                WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+                lp.copyFrom(dialog.getWindow().getAttributes());
+                lp.width    = WindowManager.LayoutParams.MATCH_PARENT;
+                lp.height   = WindowManager.LayoutParams.WRAP_CONTENT;
+                lp.gravity  = Gravity.CENTER;
+
+                dialog.getWindow().setAttributes(lp);
+
+                Button buttonCancelar      = (Button) dialog.findViewById(R.id.cancel_action);
+                Button buttonAceptar       = (Button) dialog.findViewById(R.id.aceptar_action);
+                final EditText phoneNumber = (EditText) dialog.findViewById(R.id.phoneNumber);
+
+                buttonCancelar.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+
+                buttonAceptar.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String phoneNumberStr = phoneNumber.getText().toString().trim();
+
+                        if (TextUtils.isEmpty(phoneNumberStr)) {
+                            phoneNumber.setError("Ingresar numero de celular!");
+                            return;
+                        }
+
+
+                        FirebaseUser user           = auth.getCurrentUser();
+                        String UserID               = user.getEmail().replace("@","").replace(".","");
+                        DatabaseReference mRootRef  = FirebaseDatabase.getInstance().getReference();
+                        DatabaseReference ref1      = mRootRef.child("android").child(UserID);
+                        ref1.child("Numero_celular").setValue(phoneNumberStr.toString());
+                        dialog.dismiss();
+
+                    }
+                });
+
+
+
+                dialog.show();
+            }
+
+
+        });
+
+
 
 
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
 
-               if(verticalOffset == 0 ){
-                   profileImageView.setVisibility(View.VISIBLE);
-                   cameraButton.setVisibility(View.VISIBLE);
-                   view2.setVisibility(View.VISIBLE);
-               }else if(verticalOffset ==  -486){
-                   profileImageView.setVisibility(View.GONE);
-                   cameraButton.setVisibility(View.GONE);
-                   view2.setVisibility(View.GONE);
-               }
-
             }
         });
+
+        statusCardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Dialog dialog = new Dialog(Perfil.this);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setContentView(R.layout.custom_estado_dialog);
+                WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+                lp.copyFrom(dialog.getWindow().getAttributes());
+                lp.width    = WindowManager.LayoutParams.MATCH_PARENT;
+                lp.height   = WindowManager.LayoutParams.WRAP_CONTENT;
+                lp.gravity  = Gravity.CENTER;
+
+                dialog.getWindow().setAttributes(lp);
+
+                Button buttonCancelar      = (Button) dialog.findViewById(R.id.cancel_action);
+                Button buttonAceptar       = (Button) dialog.findViewById(R.id.aceptar_action);
+                final EditText estado = (EditText) dialog.findViewById(R.id.estado);
+
+                buttonCancelar.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+
+                buttonAceptar.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String estadoStr = estado.getText().toString().trim();
+                        FirebaseUser user           = auth.getCurrentUser();
+                        String UserID               = user.getEmail().replace("@","").replace(".","");
+                        DatabaseReference mRootRef  = FirebaseDatabase.getInstance().getReference();
+                        DatabaseReference ref1      = mRootRef.child("android").child(UserID);
+
+                        if (TextUtils.isEmpty(estadoStr)) {
+                            ref1.child("Estado").setValue("Disponible");
+                            return;
+                        }else {
+                            ref1.child("Estado").setValue(estadoStr.toString());
+
+                        }
+
+                        dialog.dismiss();
+
+
+
+
+                    }
+                });
+
+
+
+                dialog.show();
+            }
+
+
+
+
+
+        });
+
+
+
 
         userNameCardView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -251,12 +365,6 @@ public class Perfil extends AppCompatActivity {
 
                 dialog.show();
 
-
-
-
-              /*  Intent cambiarcontr = new Intent(Perfil.this, cambiarContrasena.class);
-                startActivity(cambiarcontr);*/
-
             }
         });
 
@@ -264,8 +372,32 @@ public class Perfil extends AppCompatActivity {
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                photoURL = (String) dataSnapshot.getValue();
 
+                String photoURL         = (String) dataSnapshot.child("image_Url").getValue(String.class);
+                String numeroCell       = (String) dataSnapshot.child("Numero_celular").getValue(String.class);
+                String estadoStr        = (String) dataSnapshot.child("Estado").getValue(String.class);
+                String nameStr          = (String) dataSnapshot.child("Name").getValue(String.class);
+                String cumple           = (String) dataSnapshot.child("cumpleanos").getValue(String.class);
+
+                nombre.setText(nameStr.trim());
+
+                if(cumple == null){
+                    fullDate.setText("Fecha cumpleaños");
+                }else {
+                    fullDate.setText(cumple);
+                }
+
+                if(numeroCell != null){
+                    numero_celular.setText(numeroCell.trim());
+                }else {
+                    numero_celular.setText("Numero de celular");
+                }
+
+                if(estadoStr==null){
+                    status.setText("Disponible");
+                }else {
+                    status.setText(estadoStr.trim());
+                }
 
                 if(!myRef.equals("Null")){
                     Glide.with(Perfil.this)
@@ -286,19 +418,8 @@ public class Perfil extends AppCompatActivity {
             }
         });
 
-        myRef2.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String nameStr = (String) dataSnapshot.getValue();
-                nombre.setText(nameStr.trim());
 
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
 
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -329,6 +450,17 @@ public class Perfil extends AppCompatActivity {
         });
     }
 
+    private View.OnClickListener datePickerDialog = new View.OnClickListener(){
+
+
+        @Override
+        public void onClick(View v) {
+
+            DialogFragment datePicker = new DateDialog();
+            datePicker.show(getFragmentManager(),"normal");
+
+        }
+    };
 
     private void showToolbar( String title, boolean upbutton) {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -493,5 +625,80 @@ public class Perfil extends AppCompatActivity {
         Intent goBack = new Intent(Perfil.this,Chat.class);
         startActivity(goBack);
         finish();
+    }
+
+    @Override
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+
+        String fullDateStr = setDate(month, dayOfMonth,year);
+
+        FirebaseUser user           = auth.getCurrentUser();
+        String UserID               = user.getEmail().replace("@","").replace(".","");
+        DatabaseReference mRootRef  = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference ref1      = mRootRef.child("android").child(UserID);
+        ref1.child("cumpleanos").setValue(fullDateStr.toString());
+
+        fullDate.setText(fullDateStr );
+
+    }
+
+
+
+    /*function to put date in right format*/
+    private String setDate(int mMonth, int mDay, int year) {
+
+        String month, day, fulldate;
+        switch (mMonth + 1) {
+            case 1:
+                month = "Enero";
+                break;
+            case 2:
+                month = "Febrero";
+                break;
+            case 3:
+                month = "Marzo";
+                break;
+            case 4:
+                month = "Abril";
+                break;
+            case 5:
+                month = "Mayo";
+                break;
+            case 6:
+                month = "Junio";
+                break;
+            case 7:
+                month = "Julio";
+                break;
+            case 8:
+                month = "Agosto";
+                break;
+            case 9:
+                month = "Septiembre";
+                break;
+            case 10:
+                month = "Octubre";
+                break;
+            case 11:
+                month = "Noviembre";
+                break;
+            case 12:
+                month = "Diciembre";
+                break;
+            default:
+                month = "";
+                break;
+        }
+
+        if (mDay < 10) {
+            day = "0" + mDay;
+        } else {
+            day = "" + mDay;
+        }
+
+        fulldate = year + "-" + month + "-" + day;
+
+
+        return fulldate;
     }
 }

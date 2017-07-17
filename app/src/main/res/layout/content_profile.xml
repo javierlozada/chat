@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#cecece"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.example.devinlozada.chat.Perfil"
     tools:showIn="@layout/activity_profile">
@@ -39,7 +40,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:padding="@dimen/_8sdp"
-                        android:text="Status:"/>
+                        android:text="Estado:"/>
 
                     <View
                         android:layout_width="match_parent"
@@ -227,6 +228,7 @@
                     android:layout_weight="0.95">
 
                     <TextView
+                        android:id="@+id/cumpleAnos"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:padding="@dimen/_8sdp"
@@ -282,6 +284,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:padding="@dimen/_8sdp"
+                        android:id="@+id/numero_celular"
                         android:text="Numero celular"
                         android:textSize="@dimen/_15sdp" />
 

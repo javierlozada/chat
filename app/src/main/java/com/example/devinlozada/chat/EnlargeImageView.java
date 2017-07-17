@@ -27,10 +27,6 @@ public class EnlargeImageView extends AppCompatActivity  implements View.OnTouch
     String url;
     ProgressBar progressBar;
 
-
-
-
-
     private static final String TAG = "Touch";
     @SuppressWarnings("unused")
     private static final float MIN_ZOOM = 1f,MAX_ZOOM = 1f;
@@ -50,10 +46,6 @@ public class EnlargeImageView extends AppCompatActivity  implements View.OnTouch
     PointF start = new PointF();
     PointF mid = new PointF();
     float oldDist = 1f;
-
-
-
-
 
 
 

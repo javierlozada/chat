@@ -46,9 +46,9 @@ public class Chat extends AppCompatActivity {
     private NavigationView navigationView;
     private DrawerLayout submenu;
     private ImageView profilePhoto;
-    DatabaseReference myRef,myRef2;
-    TextView name, email;
-    Toolbar toolbar;
+    private DatabaseReference myRef;
+    private TextView name, email;
+    private Toolbar toolbar;
 
 
     private sharedSubMenu shared;
@@ -99,15 +99,17 @@ public class Chat extends AppCompatActivity {
         tabLayout       = (TabLayout) findViewById(R.id.tab_layout);
         viewPager       = (ViewPager) findViewById(R.id.viewPager);
 
+        TabLayout.Tab chat    = tabLayout.newTab();
         TabLayout.Tab groups  = tabLayout.newTab();
         TabLayout.Tab eventos = tabLayout.newTab();
 
-        tabLayout.addTab(groups, 0);
-        tabLayout.addTab(eventos, 1);
+        tabLayout.addTab(chat, 0);
+        tabLayout.addTab(groups, 1);
+        tabLayout.addTab(eventos, 2);
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         tabLayout.setupWithViewPager(viewPager);
 
-        viewPager.setOffscreenPageLimit(2);
+        viewPager.setOffscreenPageLimit(3);
         viewPager.setCurrentItem(0);
 
         /*cambio de color de los tabs*/
@@ -122,8 +124,7 @@ public class Chat extends AppCompatActivity {
         String UserID               = user.getEmail().replace("@","").replace(".","");
 
 
-        myRef = FirebaseDatabase.getInstance().getReference().child("android").child(UserID).child("image_Url");
-        myRef2 = FirebaseDatabase.getInstance().getReference().child("android").child(UserID).child("Name");
+        myRef = FirebaseDatabase.getInstance().getReference().child("android").child(UserID);
 
         email.setText(user.getEmail());
 
@@ -131,9 +132,14 @@ public class Chat extends AppCompatActivity {
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                String photoURL = (String) dataSnapshot.getValue();
+                String photoURL     = dataSnapshot.child("image_Url").getValue(String.class);
+                String nameStr      = dataSnapshot.child("Name").getValue(String.class);
+
 
                 if(!myRef.equals("Null")){
+
+                    name.setText(nameStr.trim());
+
                     Glide.with(Chat.this)
                             .load(photoURL)
                             .crossFade()
@@ -151,21 +157,6 @@ public class Chat extends AppCompatActivity {
 
             }
         });
-
-        myRef2.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String nameStr = (String) dataSnapshot.getValue();
-                name.setText(nameStr.trim());
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
 
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -243,17 +234,33 @@ public class Chat extends AppCompatActivity {
     }
 
     @Override
+    public void onStart(){
+        super.onStart();
+        String UserID               = user.getEmail().replace("@","").replace(".","");
+        DatabaseReference mRootRef  = FirebaseDatabase.getInstance().getReference("isOnline").child("enLinea");
+        DatabaseReference ref1      = mRootRef.child(UserID);
+        ref1.child("isOnline").setValue("true");
+
+    }
+
+
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
-       /* String UserID               = user.getEmail().replace("@","").replace(".","");
-        DatabaseReference mRootRef  = FirebaseDatabase.getInstance().getReference().child("isOnline");
-        DatabaseReference ref1      = mRootRef.child("android").child(UserID);
-        ref1.child("isOnline").setValue("false");*/
+        String UserID               = user.getEmail().replace("@","").replace(".","");
+        DatabaseReference mRootRef  = FirebaseDatabase.getInstance().getReference("isOnline").child("enLinea");
+        DatabaseReference ref1      = mRootRef.child(UserID);
+        ref1.child("isOnline").setValue("false");
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        String UserID               = user.getEmail().replace("@","").replace(".","");
+        DatabaseReference mRootRef  = FirebaseDatabase.getInstance().getReference("isOnline").child("enLinea");
+        DatabaseReference ref1      = mRootRef.child(UserID);
+        ref1.child("isOnline").setValue("false");
 
 
     }
@@ -261,6 +268,10 @@ public class Chat extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
+        String UserID               = user.getEmail().replace("@","").replace(".","");
+        DatabaseReference mRootRef  = FirebaseDatabase.getInstance().getReference("isOnline").child("enLinea");
+        DatabaseReference ref1      = mRootRef.child(UserID);
+        ref1.child("isOnline").setValue("true");
 
 
         int size = navigationView.getMenu().size();

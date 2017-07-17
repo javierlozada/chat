@@ -51,6 +51,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private static final String TAG     = "MyFirebaseMsgService";
     private String message              = "";
     private String messageTopic         = "";
+    private String topic                = "";
 
     public MyFirebaseMessagingService(){}
 
@@ -83,6 +84,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
             if(message.equals("")){
                 messageTopic = remoteMessage.getData().get("message");
+                topic        = remoteMessage.getData().get("title");
                 showNotification(messageTopic);
             }else {
 
@@ -113,7 +115,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle("Causa y Efecto")
+                .setContentTitle(topic)
                 .setContentText(message)
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)

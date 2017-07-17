@@ -65,6 +65,12 @@
                     android:src="@mipmap/ic_launcher" />
             </android.support.v7.widget.CardView>
 
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_gravity="center_vertical">
+
 
             <TextView
                 android:id="@+id/name"
@@ -72,6 +78,20 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:textSize="15sp"/>
+
+
+                <TextView
+                    android:id="@+id/estaEsribiendo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Esta escribiendo..."
+                    android:visibility="invisible"/>
+
+
+            </LinearLayout>
+
+
+
 
         </LinearLayout>
 
@@ -89,7 +109,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/dot_online"
-                android:visibility="gone"/>
+                android:visibility="invisible"/>
 
         </LinearLayout>
 
