@@ -52,7 +52,7 @@ public class profile_sender extends AppCompatActivity {
                 .load(profile_photo)
                 .crossFade()
                 .thumbnail(0.5f)
-                .placeholder(R.mipmap.ic_launcher)
+                .placeholder(R.drawable.loading)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(profile_photoImage);
 

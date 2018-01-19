@@ -1,0 +1,12 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.devinlozada.chat.biblia.antiguo_libros">
+    <item
+        android:id="@+id/aceptar_action"
+        android:icon="@drawable/ic_action_search"
+        android:title="Buscar"
+        app:showAsAction="ifRoom"/>
+
+
+</menu>

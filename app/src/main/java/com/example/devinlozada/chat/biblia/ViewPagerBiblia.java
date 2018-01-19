@@ -33,6 +33,19 @@ public class ViewPagerBiblia extends FragmentStatePagerAdapter {
     }
 
     @Override
+    public CharSequence getPageTitle(int position) {
+        //this is where you set the titles
+        switch(position) {
+            case 0:
+                return "Antiguo";
+            case 1:
+                return "Nuevo";
+
+        }
+        return null;
+    }
+
+    @Override
     public int getCount() {
         return mNumOfTabs;
     }

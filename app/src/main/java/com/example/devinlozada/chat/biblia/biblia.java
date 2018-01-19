@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.devinlozada.chat.R;
+import com.example.devinlozada.chat.externalFunctions.externalFunctions;
 import com.example.devinlozada.chat.externalFunctions.sharedSubMenu;
 
 public class biblia extends AppCompatActivity{
@@ -21,36 +22,23 @@ public class biblia extends AppCompatActivity{
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private ViewPagerBiblia adapter;
-    private DrawerLayout drawer;
+
+
 
     private sharedSubMenu shared;
+    private externalFunctions externalFunction = new externalFunctions();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_biblia);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+
+        externalFunction.showToolbar(biblia.this, "Biblia", true);
 
         tabLayout                       = (TabLayout) findViewById(R.id.tab_layout);
         viewPager                       = (ViewPager) findViewById(R.id.viewPager);
-        NavigationView navigationView   = (NavigationView) findViewById(R.id.nav_view);
-
-        drawer  = (DrawerLayout) findViewById(R.id.drawer_layout);
-        shared  = new sharedSubMenu(biblia.this,  drawer);
-
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
-
-
-        adapter         = new ViewPagerBiblia(getSupportFragmentManager(),tabLayout.getTabCount());
-
-        viewPager.setAdapter(adapter);
 
         viewPager.setCurrentItem(1);
-
 
         final TabLayout.Tab nuevo_testamento    = tabLayout.newTab().setText("Nuevo");
         final TabLayout.Tab antiguo_testamento  = tabLayout.newTab().setText("Antiguo");
@@ -58,11 +46,14 @@ public class biblia extends AppCompatActivity{
         tabLayout.addTab(nuevo_testamento,  0);
         tabLayout.addTab(antiguo_testamento,1);
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-
+        tabLayout.setupWithViewPager(viewPager);
 
          /*cambio de color de los tabs*/
         tabLayout.setSelectedTabIndicatorColor(ContextCompat.getColor(this,R.color.colorWhite));
         tabLayout.setTabTextColors(ContextCompat.getColorStateList(this,R.color.colorWhite));
+
+        adapter                         = new ViewPagerBiblia(getSupportFragmentManager(),tabLayout.getTabCount());
+        viewPager.setAdapter(adapter);
 
          /*Listeners*/
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
@@ -84,18 +75,14 @@ public class biblia extends AppCompatActivity{
             }
         });
 
-        navigationView.setNavigationItemSelectedListener(shared);
 
     }
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
+
+        finish();
+
     }
 
     @Override
@@ -103,6 +90,21 @@ public class biblia extends AppCompatActivity{
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.contacts, menu);
         return true;
+    }
+
+
+    /*when click on the message chat icon in the appbar will open a new Navigation view*/
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar PayPalItem clicks here.
+        int id = item.getItemId();
+
+        if(id == android.R.id.home){
+            onBackPressed();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
 }

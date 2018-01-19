@@ -1,33 +1,46 @@
 package com.example.devinlozada.chat.biblia;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.devinlozada.chat.R;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.io.Writer;
-
-import static android.R.attr.fragment;
-
 public class antiguo_testamento extends Fragment {
-    ListView antiguoTestamentoList;
+    private ListView antiguoTestamentoList;
+    private String array[];
+    private ArrayAdapter<String> adapter;
+
+
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.activity_antiguo_testamento,container,false);
-        antiguoTestamentoList = (ListView)v.findViewById(R.id.antiguo_testamento);
+        View v                  = inflater.inflate(R.layout.activity_antiguo_testamento,container,false);
+
+        antiguoTestamentoList   = (ListView) v.findViewById(R.id.cap_versiculo);
+        array                   = getActivity().getResources().getStringArray(R.array.antiguoTestamento);
+        adapter                 = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, android.R.id.text1, array);
+        antiguoTestamentoList.setAdapter(adapter);
+
+
+        antiguoTestamentoList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Intent antig_testamento = new Intent(getActivity(), libros.class);
+                antig_testamento.putExtra("Libro", ((TextView)view).getText().toString());
+                startActivity(antig_testamento);
+            }
+        });
+
         return v;
     }
 

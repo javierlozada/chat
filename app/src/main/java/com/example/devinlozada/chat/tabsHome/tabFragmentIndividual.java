@@ -1,4 +1,4 @@
-package com.example.devinlozada.chat;
+package com.example.devinlozada.chat.tabsHome;
 
 import android.content.Intent;
 import android.support.v4.app.Fragment;
@@ -17,6 +17,9 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.example.devinlozada.chat.ChatConversationActivity;
+import com.example.devinlozada.chat.R;
+import com.example.devinlozada.chat.Show_Chat_Activity_Data_Items;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;

@@ -4,9 +4,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.design.widget.NavigationView;
+import android.support.v4.content.FileProvider;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.example.devinlozada.chat.Login;
@@ -15,11 +20,19 @@ import com.example.devinlozada.chat.R;
 import com.example.devinlozada.chat.biblia.biblia;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
+
 
 public class sharedSubMenu implements NavigationView.OnNavigationItemSelectedListener  {
     Context context;
     FirebaseAuth auth;
     DrawerLayout subMenu;
+    private String pictureImagePath = "";
+
 
     /*receiving context to be set in onNavigationItemSelected function, to see whitch activity
    * should go*/
@@ -38,13 +51,6 @@ public class sharedSubMenu implements NavigationView.OnNavigationItemSelectedLis
         auth = FirebaseAuth.getInstance();
 
         switch (item.getItemId()){
-            case R.id.nav_camera:
-
-                break;
-            case R.id.nav_gallery:
-                break;
-            case R.id.nav_slideshow:
-                break;
             case R.id.action_edit_profile:
                 Intent perfil = new Intent(context, Perfil.class);
                 context.startActivity(perfil);
@@ -83,5 +89,7 @@ public class sharedSubMenu implements NavigationView.OnNavigationItemSelectedLis
 
         return true;
     }
+
+
 
 }

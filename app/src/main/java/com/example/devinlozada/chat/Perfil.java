@@ -404,7 +404,7 @@ public class Perfil extends AppCompatActivity implements android.app.DatePickerD
                             .load(photoURL)
                             .crossFade()
                             .thumbnail(0.5f)
-                            .placeholder(R.mipmap.ic_launcher)
+                            .placeholder(R.drawable.loading)
                             .diskCacheStrategy(DiskCacheStrategy.ALL)
                             .into(profileImageView);
                 }

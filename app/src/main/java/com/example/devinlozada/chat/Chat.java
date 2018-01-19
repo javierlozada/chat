@@ -1,12 +1,8 @@
 package com.example.devinlozada.chat;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
@@ -19,13 +15,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.devinlozada.chat.externalFunctions.sharedSubMenu;
+import com.example.devinlozada.chat.tabsHome.ViewPagerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -144,7 +140,7 @@ public class Chat extends AppCompatActivity {
                             .load(photoURL)
                             .crossFade()
                             .thumbnail(0.5f)
-                            .placeholder(R.mipmap.ic_launcher)
+                            .placeholder(R.drawable.loading)
                             .diskCacheStrategy(DiskCacheStrategy.ALL)
                             .into(profilePhoto);
                 }else {

@@ -9,6 +9,8 @@
     <dimen name="_12sdp">12dp</dimen>
     <dimen name="_16sdp">16dp</dimen>
     <dimen name="_8sdp">8dp</dimen>
+    <dimen name="appbar_padding_top">8dp</dimen>
+    <dimen name="text_margin">16dp</dimen>
 
 
     _16sdp

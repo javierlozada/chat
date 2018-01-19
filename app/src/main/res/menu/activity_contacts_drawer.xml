@@ -7,17 +7,9 @@
             android:icon="@drawable/user"
             android:title="Perfil" />
         <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="Camara" />
-        <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Galeria" />
-        <item
             android:id="@+id/biblia"
             android:icon="@drawable/ic_menu_slideshow"
-            android:title="Biblia" />
+            android:title="Biblia - Reina Valera" />
     </group>
 
     <item android:title="Session">

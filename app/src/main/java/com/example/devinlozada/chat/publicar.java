@@ -6,9 +6,13 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.media.Image;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.util.ArrayMap;
@@ -66,13 +70,14 @@ public class publicar extends AppCompatActivity {
     String[] permissions= new String[]{
             android.Manifest.permission.READ_EXTERNAL_STORAGE};
     public static final int READ_EXTERNAL_STORAGE = 0,MULTIPLE_PERMISSIONS = 10;
-    private ImageButton showImage;
+    private ImageView showImage;
     private Uri mImageUri = Uri.EMPTY;
     private EditText comentario;
     private StorageReference mStorage;
     private DatabaseReference mDatabase;
 
     private ProgressDialog mProgress;
+    private VideoView videoView;
 
 
     @Override
@@ -86,8 +91,9 @@ public class publicar extends AppCompatActivity {
         photoURL        = (ImageView) findViewById(R.id.photoURL);
         nombre          = (TextView) findViewById(R.id.nombre);
         chooseFotoVideo = (CardView) findViewById(R.id.AgregarFoto);
-        showImage       = (ImageButton) findViewById(R.id.showImageView);
+        showImage       = (ImageView) findViewById(R.id.showImageView);
         comentario      = (EditText) findViewById(R.id.comentario);
+        videoView       = (VideoView) findViewById(R.id.videoView);
 
         mProgress       = new ProgressDialog(this);
 
@@ -100,7 +106,7 @@ public class publicar extends AppCompatActivity {
                 .load(image_URL)
                 .crossFade()
                 .thumbnail(0.5f)
-                .placeholder(R.mipmap.ic_launcher)
+                .placeholder(R.drawable.loading)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(photoURL);
 
@@ -145,11 +151,13 @@ public class publicar extends AppCompatActivity {
             mImageUri = data.getData();
             Log.d("LOGGED", "imgFile : " + mImageUri);
             showImage.setImageURI(mImageUri);
+            videoView.setVisibility(View.INVISIBLE);
 
 
         }else if (requestCode == 5 && resultCode == RESULT_OK ) {
 
         File imgFile = new  File(pictureImagePath);
+
         if(imgFile.exists()) {
             Log.d("LOGGED", "imgFile : " + imgFile);
 
@@ -157,10 +165,26 @@ public class publicar extends AppCompatActivity {
             Log.d("LOGGED", "fileUri : " + fileUri);
 
             showImage.setImageURI(fileUri);
+            videoView.setVisibility(View.INVISIBLE);
 
         }
     }
-}
+
+
+    if(requestCode == REQUEST_TAKE_GALLERY_VIDEO && resultCode == RESULT_OK){
+        videoView.setVisibility(View.VISIBLE);
+
+        mImageUri = data.getData();
+
+        String path = data.getData().toString();
+        videoView.setVideoPath(path);
+        videoView.start();
+
+        showImage.setVisibility(View.INVISIBLE);
+
+    }
+
+}//end onActivityResult
 
 
     private void showToolbar( String title, boolean upbutton) {
@@ -245,7 +269,7 @@ public class publicar extends AppCompatActivity {
 
         }
 
-    }
+    }//end startPosting
 
     private  boolean checkPermissions() {
         int result;
@@ -268,14 +292,14 @@ public class publicar extends AppCompatActivity {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("image/*");
         startActivityForResult(intent, GALLERY_REQUEST);
-    }
+    }//end callgalaryFoto
 
     private void callgalaryVideo() {
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("video/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(intent,"Seleccionar Video"),REQUEST_TAKE_GALLERY_VIDEO);
-    }
+    }//end callgalaryVideo
 
     private class NetworkAsyncTask extends AsyncTask<Void, Void, Void> {
 
@@ -295,14 +319,6 @@ public class publicar extends AppCompatActivity {
                 connection.setRequestProperty("Content-Type", "application/json");
                 //Put below you FCM API Key instead
                 connection.setRequestProperty("Authorization", "key=" + "AAAAC46AZt0:APA91bGK0Dl40lADv53wcVDEzWrmTyQIUTC91US5WkqHH-10NkH--gsGcpqoe_cXrSCjaIwGc1gr5dp9H-eLfTVYLT17GCYb59GYLHoH9ufOUokVYbt795pVcNeXAnhEXqgYCtI16sqp");
-
-                /*JSONObject root = new JSONObject();
-                JSONObject data = new JSONObject();
-                data.put(KEY_FCM_TEXT, messageText);
-                data.put(KEY_FCM_SENDER_ID, sender);
-                root.put("data", data);
-                root.put("to", receiver);
-                */
 
                 JSONObject json = new JSONObject();
                 json.put("to","/topics/news");
@@ -330,7 +346,7 @@ public class publicar extends AppCompatActivity {
 
             return null;
         }
-    }
+    }//end NetworkAsyncTask
 
 
 

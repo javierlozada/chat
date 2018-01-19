@@ -1,31 +1,25 @@
-package com.example.devinlozada.chat;
+package com.example.devinlozada.chat.tabsHome;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.media.Image;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.example.devinlozada.chat.R;
+import com.example.devinlozada.chat.news_feed;
+import com.example.devinlozada.chat.publicar;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -34,9 +28,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class tabFragmentEventos extends Fragment{
 
@@ -57,7 +48,7 @@ public class tabFragmentEventos extends Fragment{
     public void onStart(){
         super.onStart();
         firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<news_feed, listFeedItem>(
-                news_feed.class,R.layout.item_list,listFeedItem.class,mDatabase
+                news_feed.class, R.layout.item_list,listFeedItem.class,mDatabase
         ) {
             @Override
             protected void populateViewHolder(listFeedItem viewHolder, news_feed model, int position) {
@@ -66,6 +57,17 @@ public class tabFragmentEventos extends Fragment{
                 viewHolder.setProfileImage(getActivity(),model.getProfileNamePhoto());
                 viewHolder.setImage(getActivity(),model.getImage());
                 viewHolder.sethoraPublicacion(model.getHoraPublicacion());
+
+
+                viewHolder.commentLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent comment =  new Intent(getActivity(), com.example.devinlozada.chat.comentario.comment.class);
+                        startActivity(comment);
+                    }
+                });
+
+
 
             }
         };
@@ -82,10 +84,17 @@ public class tabFragmentEventos extends Fragment{
     public static class listFeedItem extends RecyclerView.ViewHolder{
 
         View mView;
+        ImageView listItemImage;
+        LinearLayout commentLayout;
 
         public listFeedItem(View itemView) {
             super(itemView);
             mView = itemView;
+
+            listItemImage = (ImageView) mView.findViewById(R.id.photoImage);
+            commentLayout = (LinearLayout) mView.findViewById(R.id.commentLayout);
+
+
         }
 
         public void setDescription(String description){
@@ -105,7 +114,7 @@ public class tabFragmentEventos extends Fragment{
                     .load(image)
                     .crossFade()
                     .thumbnail(0.5f)
-                    .placeholder(R.mipmap.ic_launcher)
+                    .placeholder(R.drawable.loading)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(profileImage);
         }
@@ -118,7 +127,7 @@ public class tabFragmentEventos extends Fragment{
                         .load(image)
                         .crossFade()
                         .thumbnail(0.5f)
-                        .placeholder(R.mipmap.ic_launcher)
+                        .placeholder(R.drawable.loading)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .into(Image);
             }
@@ -145,7 +154,9 @@ public class tabFragmentEventos extends Fragment{
         card_viewCompartir  = (CardView) v.findViewById(R.id.card_viewCompartir);
         profile_Photo       = (ImageView) v.findViewById(R.id.profilePhoto);
         mList               = (RecyclerView) v.findViewById(R.id.show_eventos_recyclerView);
+
         mList.setHasFixedSize(true);
+
 
         mLayoutManager = new LinearLayoutManager(getActivity());
         mLayoutManager.setReverseLayout(true);
@@ -174,7 +185,7 @@ public class tabFragmentEventos extends Fragment{
         card_viewCompartir.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent publicar =  new Intent(getActivity(), publicar.class);
+                Intent publicar =  new Intent(getActivity(), com.example.devinlozada.chat.publicar.class);
                 publicar.putExtra("Image_url",photoURL );
                 publicar.putExtra("nombre",nombre);
                 startActivity(publicar);
@@ -221,9 +232,6 @@ public class tabFragmentEventos extends Fragment{
 
             }
         });
-
-
-
 
 
         return v;

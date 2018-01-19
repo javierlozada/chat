@@ -1,4 +1,4 @@
-package com.example.devinlozada.chat;
+package com.example.devinlozada.chat.tabsHome;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -11,7 +11,6 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 
 public class ViewPagerAdapter extends FragmentStatePagerAdapter {
     int numOfTabs;
-
 
 
     public ViewPagerAdapter(FragmentManager fm,int NumOfTabs) {

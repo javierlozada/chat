@@ -193,7 +193,7 @@ public class ChatConversationActivity extends AppCompatActivity {
                        .load(image_URL)
                        .crossFade()
                        .thumbnail(0.5f)
-                       .placeholder(R.mipmap.ic_launcher)
+                       .placeholder(R.drawable.loading)
                        .diskCacheStrategy(DiskCacheStrategy.ALL)
                        .into(profilePhoto);
            }

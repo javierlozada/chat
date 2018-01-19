@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    android:weightSum="1">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.9"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/NombreLibro"
+            android:layout_width="wrap_content"
+            android:textColor="@color/colorBlack"
+            android:textStyle="bold"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/_16sdp"
+            android:padding="@dimen/_10sdp" />
+
+        <TextView
+            android:id="@+id/totalCapitulos"
+            android:textColor="@color/colorBlack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/_14sdp"
+            android:padding="@dimen/_10sdp" />
+
+       <ListView
+           android:layout_width="match_parent"
+           android:layout_height="match_parent"
+           android:divider="@color/colorPrimary"
+           android:dividerHeight="@dimen/_1sdp"
+           android:id="@+id/listCap"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.1">
+
+        <Button
+            android:padding="@dimen/_8sdp"
+            android:layout_gravity="center"
+            android:background="@null"
+            android:text="Cancelar"
+            android:textColor="@color/colorPrimary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/cancelBtn"/>
+
+
+    </LinearLayout>
+
+</LinearLayout>

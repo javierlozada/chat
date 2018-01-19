@@ -1,4 +1,4 @@
-package com.example.devinlozada.chat;
+package com.example.devinlozada.chat.tabsHome;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -19,12 +18,13 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.example.devinlozada.chat.ChatGroupConversationActivity;
+import com.example.devinlozada.chat.R;
+import com.example.devinlozada.chat.Show_Chat_Activity_Group_Items;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -33,10 +33,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
 
 
 public class tabFragmentGroups extends Fragment{
@@ -56,7 +52,7 @@ public class tabFragmentGroups extends Fragment{
         super.onStart();
 
          firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Show_Chat_Activity_Group_Items, tabFragmentGroups.listGroupItem>(
-                Show_Chat_Activity_Group_Items.class,R.layout.show_chat_group_item,tabFragmentGroups.listGroupItem.class,mDatabase
+                Show_Chat_Activity_Group_Items.class, R.layout.show_chat_group_item,tabFragmentGroups.listGroupItem.class,mDatabase
         ) {
             @Override
             protected void populateViewHolder(listGroupItem viewHolder, Show_Chat_Activity_Group_Items model, final int position) {
@@ -119,7 +115,7 @@ public class tabFragmentGroups extends Fragment{
                     .load(image)
                     .crossFade()
                     .thumbnail(0.5f)
-                    .placeholder(R.mipmap.ic_launcher)
+                    .placeholder(R.drawable.loading)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(groupImage);
         }
